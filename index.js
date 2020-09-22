@@ -1,10 +1,9 @@
+'use strict';
 // run the server and connect to DB
-
 const mongoose = require('mongoose');
 const server = require('./src/server');
-
 // connection details should be .env file
-const MONGOOSE_URL = 'mongodb://localhost:27017/auth-server';
+const MONGOOSE_URL = 'mongodb://localhost:27017/inventory';
 
 const mongooseOptions = {
   useNewUrlParser: true,
