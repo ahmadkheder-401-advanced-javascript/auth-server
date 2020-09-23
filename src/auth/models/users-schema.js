@@ -24,8 +24,8 @@ userSchema.statics.authenticateBasic = async function (username, password) {
 
     console.log('>>>>>>>result', result);
     if (result) {
-       /*   since the result is an object of the schema, 
-        so it has access to the (methods) of the schema */
+        /*   since the result is an object of the schema, 
+         so it has access to the (methods) of the schema */
         let compareResult = await result.comparePassword(password);
         return compareResult;
     } else {
@@ -35,19 +35,38 @@ userSchema.statics.authenticateBasic = async function (username, password) {
 //hooks
 /* add a hashing methods(hooks)
  that will be always triggered  whenever a new user saved/created in the schema */
- // telling the schema right before the save, hash the password
- userSchema.pre('save',async function(){
-     this.password = await bcrypt.hash(this.password,5);
- });
+// telling the schema right before the save, hash the password
+userSchema.pre('save', async function () {
+    this.password = await bcrypt.hash(this.password, 5);
+});
 
-module.exports = mongoose.model("userSchema",userSchema)
+userSchema.statics.authenticateToken = async function (token) {
+
+    try {
+        console.log('TOKEN>>>>>>>>',token);
+        let tokenObject = jwt.verify(token, SECRET);
+        console.log("tokenObject -----> ", tokenObject);
+        let result = await this.findOne({ username: tokenObject.username });
+
+        if (result) {
+        console.log('TOKEN>>>>>>>>',token);
+        next();
+        return Promise.resolve({ tokenObject: tokenObject });
+        } else {
+            next('Invalid user!');
+            return Promise.reject();
+        }
+    } catch (e){ next(`ERROR: ${e.message}`) }
+
+};
+module.exports = mongoose.model("userSchema", userSchema)
 // mongoose.model("userSchema",userSchema);
 
 
 
 
 
-/* 
+/*
 userFunctions.hashPass = async function (record) {
     return {
         userName: record.username,
@@ -73,7 +92,7 @@ userFunctions.authenticateBasic = async function (username, password) {
 userFunctions.generateToken = function (username) {
     return jwt.sign({ username: username }, SECRET);
 } */
-/* 
+/*
 class User {
     constructor() {
         this.schema = mongoose.model('userScema', userScema);

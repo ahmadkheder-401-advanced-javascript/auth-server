@@ -4,10 +4,12 @@ const users = require('./models/users-schema');
 const basicAuth = require('./middleware/basicAuth')
 const express = require('express');
 const router = express.Router();
+const bearerAuth = require('./middleware/bearer-auth');
 
 router.post('/signup', signUpHandler);
 router.post('/signin', basicAuth, signInHandler);
 router.get('/users', basicAuth, getAllUsers);
+router.get('/listusers', bearerAuth, getAllUsers);
 
 /**
  * this function respons the token to the user if it is not exist
