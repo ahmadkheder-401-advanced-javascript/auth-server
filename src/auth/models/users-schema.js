@@ -43,20 +43,22 @@ userSchema.pre('save', async function () {
 userSchema.statics.authenticateToken = async function (token) {
 
     try {
-        console.log('TOKEN>>>>>>>>',token);
         let tokenObject = jwt.verify(token, SECRET);
         console.log("tokenObject -----> ", tokenObject);
-        let result = await this.findOne({ username: tokenObject.username });
-
-        if (result) {
-        console.log('TOKEN>>>>>>>>',token);
-        next();
-        return Promise.resolve({ tokenObject: tokenObject });
+        let check_user = await this.findOne({ username: tokenObject.username });
+        let user_obj = await this.find(tokenObject.username);
+        if (check_user) {
+            // next();
+            return Promise.resolve(
+                {
+                    tokenObject: tokenObject,
+                    user: user_obj
+                });
         } else {
-            next('Invalid user!');
+            // next('Invalid user!');
             return Promise.reject();
         }
-    } catch (e){ next(`ERROR: ${e.message}`) }
+    } catch (e) { next(`ERROR:e.message: ${e.message}...---..e.message`) }
 
 };
 module.exports = mongoose.model("userSchema", userSchema)

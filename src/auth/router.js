@@ -5,12 +5,16 @@ const basicAuth = require('./middleware/basicAuth')
 const express = require('express');
 const router = express.Router();
 const bearerAuth = require('./middleware/bearer-auth');
+const ouath = require('./middleware/oauth')
 
 router.post('/signup', signUpHandler);
 router.post('/signin', basicAuth, signInHandler);
 router.get('/users', basicAuth, getAllUsers);
 router.get('/listusers', bearerAuth, getAllUsers);
 
+router.get('/oauth', ouath, (req, res)=> {
+    res.status(200).send(req.token);
+});
 /**
  * this function respons the token to the user if it is not exist
  * @param {Object} req 

@@ -12,7 +12,6 @@ module.exports = (req, res, next)=> {
     if (!req.headers.authorization) {
         return next('Invalid Login, No Headers !!');
     }
-    console.log("req.headers.authoriation ::::::: ",req.headers.authorization);
     let bearer = req.headers.authorization.split(' ');
    
     if (bearer[0] == 'Bearer') {
