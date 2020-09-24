@@ -8,6 +8,52 @@ const userSchema = new mongoose.Schema({
     username: { type: String, require: true },
     password: { type: String, require: true }
 });
+let users = {};
+let roles = {
+    admin: ["READ", "CREATE", "UPDATE", "DELETE"],
+    editor: ["READ", "CREATE", "UPDATE"],
+    writer: ["READ", "CREATE"],
+    user: ["READ"]
+};
+users.save = async function (record) {
+    let getUser = record.username
+    await userAccount.remove({})
+    let checkUser = await userAccount.find({
+        username: getUser
+    })
+    if (!checkUser) {
+        try {
+            console.log(record);
+            record.password = await bcrypt.hash(record.password, 5);
+        } catch (e) {
+            console.log("error in bcrypt: ", e)
+        }
+        let newUser = new userAccount(record);
+
+        await newUser.save()
+        return record;
+    }
+    return Promise.reject();
+};
+
+users.authenticateBasic = async function (user, password) {
+    let userObj = await userAccount.find({
+        username: user
+    })
+    if (userObj) {
+
+        let valid = await bcrypt.compare(password, userObj[0].password);
+        let returnValue = valid ? userObj : Promise.reject();
+        return returnValue
+    }
+    return Promise.reject();
+
+};
+
+users.list = async function () {
+    let all = await userAccount.find({})
+    return all;
+}
 
 // compare the input password with the password from the record
 userSchema.methods.comparePassword = async function (password) {
