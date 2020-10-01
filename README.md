@@ -1,13 +1,24 @@
+
 # auth-server
-# LAB - Class 11
-## Project: auth-server
-### Author: Student/ Name
-### Links and ResourcesGroup
-- [ci/cd](http://xyz.com) (GitHub Actions)
-- [back-end server url](http://xyz.com) (when applicable)
-- [front-end application](http://xyz.com) (when applicable)
-### Setup
-#### `.env` requirements (where applicable)
-i.e.
-- `PORT` - Port Number
-- `MONGODB_URI` - URL to the running mongo instance/db
+
+# LAB - Class 14
+
+## Installation
+
+- On your terminal
+
+- `git clone https://github.com/ahmadkheder-401-advanced-javascript/auth-server.git`
+- `npm install`
+- `sudo systemctl start mongod`
+- `node .`
+
+## Test
+
+`npm test __test__/auth.router.test.js`
+
+**dependencies:**
+`express,jest, @code-fellows/supergoose,jsonwebtoken, morgan, base46, cors`
+
+# UML diagram
+
+![uml](assets/lab13auth-server.jpg)

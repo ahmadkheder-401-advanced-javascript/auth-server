@@ -6,15 +6,20 @@ const SECRET = 'mytokensecret';
 
 const userSchema = new mongoose.Schema({
     username: { type: String, require: true },
-    password: { type: String, require: true }
+    password: { type: String, require: true },
+    role: {
+        type: String,
+        default: 'user',
+        enum: ['user','admin', 'editor', 'writer']
+      }
 });
 let users = {};
-let roles = {
-    admin: ["READ", "CREATE", "UPDATE", "DELETE"],
-    editor: ["READ", "CREATE", "UPDATE"],
-    writer: ["READ", "CREATE"],
-    user: ["READ"]
-};
+// let roles = {
+//     admin: ["READ", "CREATE", "UPDATE", "DELETE"],
+//     editor: ["READ", "CREATE", "UPDATE"],
+//     writer: ["READ", "CREATE"],
+//     user: ["READ"]
+// };
 users.save = async function (record) {
     let getUser = record.username
     await userAccount.remove({})
@@ -56,7 +61,7 @@ users.list = async function () {
 }
 
 // compare the input password with the password from the record
-userSchema.methods.comparePassword = async function (password) {
+userSchema.methods.comparePassword = async (password) => {
     const valid = await bcrypt.compare(password, this.password);
     return valid ? this : null;
 }
@@ -108,67 +113,25 @@ userSchema.statics.authenticateToken = async function (token) {
 
 };
 module.exports = mongoose.model("userSchema", userSchema)
-// mongoose.model("userSchema",userSchema);
 
 
+/* 
 
 
+'use strict';
 
-/*
-userFunctions.hashPass = async function (record) {
-    return {
-        userName: record.username,
-        userPass: await bcrypt.hash(record.password, 5)
-    }
-}
-userFunctions.authenticateBasic = async function (username, password) {
-    let userLogin = new User();
-    let result = await userLogin.get({ userName: username });
-    console.log('>>>>>>>result', result);
-    if (result.length > 0) {
-        let userPassword = password
-        let hasedPass = result[0].userPass
-        // console.log('>>>>>>>userPassword',record);
-        let valid = await bcrypt.compare(userPassword, hasedPass)
-        let returnValue = valid ? result : Promise.reject();
-        return returnValue
-    } else {
-        return Promise.reject();
-    }
-}
-
-userFunctions.generateToken = function (username) {
-    return jwt.sign({ username: username }, SECRET);
-} */
-/*
-class User {
-    constructor() {
-        this.schema = mongoose.model('userScema', userScema);
-    }
-    async create(record) {
-        console.log('>>>>>>>>>>>>>>>dataRecord', record);
-        let dataRecord = await userFunctions.hashPass(record)
-        let newUser = new this.schema(dataRecord);
-        return newUser.save();
-    }
-    get(query) {
-        // let obj = val ? { prop : val } : {};
-        // console.log('>>>>>>>>>>OBJ',obj);
-        return this.schema.find(query);
-    }
-    getByuserName(userName) {
-        let obj = { userName };
-        return this.schema.find(obj);
-    }
-    update(_id, record) {
-        return this.schema.findByIdAndUpdate(_id, record);
-    }
-    patch(_id, record) {
-        return this.schema.findByIdAndUpdate(_id, record);
-    }
-    delete(_id) {
-        return this.schema.findByIdAndDelete(_id)
-    }
+const mongoose = require('mongoose');
 
 
-} */
+const users = mongoose.Schema({
+    username: { type: String, required: true },
+    password: { type: String, required: true },
+  });
+  
+  users.methods.comparePassword =  function () {
+  
+  };
+  
+  module.exports = mongoose.model('users', users);
+
+*/
